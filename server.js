@@ -13,9 +13,11 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('Nama: Dino Febiyan');
-  res.send('NIM: 362458302043');
-  res.send('Kelas: TRPL 2D');
+  res.send(`
+    Nama: Dino Febiyan<br>
+    NIM: 362458302043<br>
+    Kelas: TRPL 2D
+  `);
 });
 
 //===ROUTES===
