@@ -4,7 +4,8 @@
   "description": "pembuatan projek intero dengan koneksi database",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "author": "Dino Febiyan",
   "license": "ISC",
@@ -14,6 +15,6 @@
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "sqlite3": "^5.1.7"
+    "pg": "^8.16.3"
   }
 }
