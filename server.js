@@ -160,6 +160,79 @@ app.delete('/movies/:id', [authenticateToken, authorizeRole('admin')], async (re
   }
 });
 
+//===DIRECTORS ROUTES===
+app.get('/directors', async (req, res, next) => {
+  const sql = `
+    SELECT d.id, d.name, d."birthYear"
+    FROM directors d
+    ORDER BY d.id ASC
+    `;
+  try {
+    const result = await db.query(sql);
+    res.json(result.rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/directors/:id', async (req, res, next) => {
+  const sql = `
+    SELECT d.id, d.name, d."birthYear"
+    FROM directors d
+    WHERE d.id = $1
+  `;
+  try {
+    const result = await db.query(sql, [req.params.id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Director tidak ditemukan' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/directors', authenticateToken, async (req, res, next) => {
+  const { name, birthYear} = req.body;
+  if (!name || !birthYear) {
+    return res.status(400).json({ error: 'name, birthYear wajib diisi' });
+  }
+  const sql = 'INSERT INTO directors(name, "birthYear") VALUES($1, $2) RETURNING *';
+  try {
+    const result = await db.query(sql, [name, birthYear]);
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.put('/directors/:id', [authenticateToken, authorizeRole('admin')], async (req, res, next) => {
+  const { name, birthYear} = req.body;
+  const sql = 'UPDATE directors SET name = $1, "birthYear" = $2 WHERE id = $3 RETURNING *';
+  try {
+    const result = await db.query(sql, [name, birthYear, req.params.id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'directors tidak ditemukan' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.delete('/directors/:id', [authenticateToken, authorizeRole('admin')], async (req, res, next) => {
+  const sql = 'DELETE FROM directors WHERE id = $1 RETURNING *';
+  try {
+    const result = await db.query(sql, [req.params.id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'directors tidak ditemukan' });
+    }
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
+});
+
 //===FALLBACK & ERROR HANDLING===
 app.use((req, res) => {
   res.status(404).json({ error: 'Rute tidak ditemukan' });
