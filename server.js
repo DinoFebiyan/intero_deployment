@@ -13,7 +13,9 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('API ON!');
+  res.send('Nama: Dino Febiyan');
+  res.send('NIM: 362458302043');
+  res.send('Kelas: TRPL 2D');
 });
 
 //===ROUTES===
